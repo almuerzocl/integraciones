@@ -45,5 +45,6 @@ steps:
       - "--port=8080"
       - "--allow-unauthenticated"
       # Secretos NUEVOS y propios de este servicio. No reutiliza supabase-service-role-key: el servicio no la necesita.
-      - "--set-secrets=DATABASE_URL=integraciones-database-url:latest,CREDENTIALS_KEY=integraciones-credentials-key:latest,CRON_SECRET=cron-secret:latest"
-      - "--set-env-vars=NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL},NEXT_PUBLIC_SUPABASE_ANON_KEY=${_NEXT_PUBLIC_SUPABASE_ANON_KEY}"
+      - "--set-secrets=DATABASE_URL=integraciones-database-url:latest,CREDENTIALS_KEY=integraciones-credentials-key:latest,CRON_SECRET=cron-secret:latest,/etc/db-ca/ca.crt=integraciones-database-ca:latest"
+      - # NODE_EXTRA_CA_CERTS: Node no reconoce la CA de Supabase por defecto; sin ella la conexión a la base falla por certificado.
+      - "--set-env-vars=NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL},NEXT_PUBLIC_SUPABASE_ANON_KEY=${_NEXT_PUBLIC_SUPABASE_ANON_KEY},NODE_EXTRA_CA_CERTS=/etc/db-ca/ca.crt"
