@@ -1,10 +1,11 @@
 -- 001_esquema_integraciones.sql
 -- Esquema PROPIO del servicio integraciones.almuerzo.cl, en la misma base de almuerzo.cl.
 --
--- NO APLICADA. Requisitos previos, en este orden:
---   1. Migración 060 de v5-pwa (crea el rol integraciones_service y las funciones integracion_*).
---   2. Esta migración.
---   3. Fuera de cualquier archivo: ALTER ROLE integraciones_service LOGIN PASSWORD '...';  (la contraseña va en Secret Manager).
+-- APLICADA en producción el 2026-11-07 (proyecto almuerzov5), registrada como `integraciones_esquema`, con confirmación explícita
+-- del responsable. Verificado después: 3 tablas con RLS activo y una policy `servicio_total` solo para integraciones_service; ACL de las
+-- tablas {postgres, integraciones_service=arwd}; anon, authenticated y service_role sin acceso al esquema ni a las tablas; 0 filas;
+-- los 87 platos y 5 restaurantes existentes intactos. Orden seguido: 1) migración 060 de v5-pwa, 2) esta migración.
+-- Pendiente (fuera de cualquier archivo): ALTER ROLE integraciones_service LOGIN PASSWORD '...';  (la contraseña va en Secret Manager).
 --
 -- Qué guarda
 --   conexiones    una por (restaurante, proveedor): credenciales CIFRADAS por la aplicación (AES-256-GCM; la clave NO está en la base)
