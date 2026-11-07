@@ -69,6 +69,7 @@ describe.skipIf(!DIR)('sincronización de punta a punta', () => {
       alter table inventory_movements drop constraint inventory_movements_reason_check;
       alter table inventory_movements add constraint inventory_movements_reason_check check (reason = any (array['ORDER_APPROVED','ORDER_RETURNED','MANUAL_INCREASE','MANUAL_DECREASE','DAILY_INITIAL','DAILY_CLOSE_ZERO']));
       create table inventory_daily_close(day date primary key, ran_at timestamptz not null default now(), items_reset integer not null default 0);
+      create table inventory_daily_close_restaurant(day date not null, restaurant_id uuid not null, ran_at timestamptz not null default now(), items_reset integer not null default 0, primary key (day, restaurant_id));
     `);
     await db.exec(mig('046_menu_categories.sql'));
     await db.exec(mig('060_integracion_menu.sql'));
