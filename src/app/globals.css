@@ -12,3 +12,7 @@ button { margin-top:16px; padding:10px 16px; border:0; border-radius:8px; backgr
 button.ghost { background:transparent; color:var(--mute); border:1px solid var(--line); margin-top:0; }
 .err { color:var(--err); margin-top:12px; } .ok { color:var(--ok); }
 header.top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+table { width:100%; border-collapse:collapse; font-size:.9rem; }
+th, td { text-align:left; padding:6px 4px; border-bottom:1px solid var(--line); }
+th { color:var(--mute); font-weight:600; }
+details summary { cursor:pointer; color:var(--mute); }

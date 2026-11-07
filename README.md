@@ -23,7 +23,7 @@ FUDO (API pública) ──lee──▶ integraciones (este servicio) ──funci
 | A | Servicio, esquema propio, cifrado, login | hecha (esta rama) |
 | B | Migración 060 en `v5-pwa` (rama `feat/integracion-menu`) | hecha, sin aplicar |
 | C | Cliente FUDO y sincronización (`/api/cron/sync`, `setup_scheduler_sync.sh`) | hecha en esta rama, probada con datos simulados y contra la migración 060 |
-| D | Pantalla de conexión y estado | pendiente |
+| D | Pantalla de conexión y estado (conectar, probar, sincronizar ahora, pausar, eliminar) | hecha en esta rama |
 | E | Pruebas en restaurante de demostración y puesta en marcha | pendiente |
 
 ## Orden de puesta en marcha (nada de esto está hecho)
