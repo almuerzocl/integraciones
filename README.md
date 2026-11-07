@@ -22,7 +22,7 @@ FUDO (API pública) ──lee──▶ integraciones (este servicio) ──funci
 | --- | --- | --- |
 | A | Servicio, esquema propio, cifrado, login | hecha (esta rama) |
 | B | Migración 060 en `v5-pwa` (rama `feat/integracion-menu`) | hecha, sin aplicar |
-| C | Cliente FUDO y sincronización | pendiente |
+| C | Cliente FUDO y sincronización (`/api/cron/sync`, `setup_scheduler_sync.sh`) | hecha en esta rama, probada con datos simulados y contra la migración 060 |
 | D | Pantalla de conexión y estado | pendiente |
 | E | Pruebas en restaurante de demostración y puesta en marcha | pendiente |
 
@@ -35,11 +35,19 @@ FUDO (API pública) ──lee──▶ integraciones (este servicio) ──funci
 5. Desplegar con `gcloud builds submit --config cloudbuild.yaml --substitutions _NEXT_PUBLIC_SUPABASE_URL=…,_NEXT_PUBLIC_SUPABASE_ANON_KEY=…`.
 6. Mapear el dominio `integraciones.almuerzo.cl` al servicio de Cloud Run.
 
+## Pendiente de verificar con credenciales reales de FUDO
+
+- URL y cuerpo del endpoint de autenticación y el campo del token (`src/lib/fudo/cliente.ts`, variables opcionales `FUDO_AUTH_URL` y `FUDO_API_URL`).
+- Que `filter[active]=eq.true` y `include=productCategory` se comporten como dice la especificación publicada.
+- Que el stock de FUDO se descuente al vender en el local (la sincronización asume que sí).
+- Límite conocido: si se pierde la tabla `stock_visto` de un plato que ya tenía stock en almuerzo.cl, la siguiente corrida suma el stock de FUDO sobre el existente. Se evita no borrando esa tabla a mano.
+
 ## Desarrollo
 
 ```bash
 npm install
 npm test            # pruebas (incluye el esquema sobre PGlite)
+PWA_MIGRATIONS_DIR=../v5-pwa/migrations npm test   # además, la prueba de punta a punta contra la migración 060
 npm run typecheck
 npm run dev
 ```
