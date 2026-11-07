@@ -32,14 +32,14 @@ parametrizarlas por proveedor.
 | Fase | Contenido | Estado |
 | --- | --- | --- |
 | A | Servicio, esquema propio, cifrado, login | hecha (esta rama) |
-| B | Migración 060 en `v5-pwa` (rama `feat/integracion-menu`) | hecha, sin aplicar |
+| B | Migración 060 en `v5-pwa` (rama `feat/integracion-menu`) | hecha y **aplicada en producción** (2026-11-07) |
 | C | Cliente FUDO y sincronización (`/api/cron/sync`, `setup_scheduler_sync.sh`) | hecha en esta rama, probada con datos simulados y contra la migración 060 |
 | D | Pantalla de conexión y estado (conectar, probar, sincronizar ahora, pausar, eliminar) | hecha en esta rama |
 | E | Pruebas en restaurante de demostración y puesta en marcha | pendiente |
 
 ## Orden de puesta en marcha (nada de esto está hecho)
 
-1. Aplicar `v5-pwa/migrations/060_integracion_menu.sql` en una **branch de Supabase**, probar, y recién después en producción (con confirmación explícita).
+1. ~~Aplicar `v5-pwa/migrations/060_integracion_menu.sql`~~ **Hecho el 2026-11-07 directamente en producción** (sin rama de pruebas: Supabase la exige en plan Pro), con verificación posterior y una prueba funcional que no dejó datos. Detalle en el encabezado de la migración y en la solicitud https://github.com/almuerzocl/v5-pwa/pull/240.
 2. Aplicar `migrations/001_esquema_integraciones.sql` de este repositorio.
 3. Asignar login al rol fuera de cualquier archivo: `ALTER ROLE integraciones_service LOGIN PASSWORD '…'` y guardar la URL de conexión en el secreto `integraciones-database-url`.
 4. Crear los secretos `integraciones-credentials-key` (`openssl rand -base64 32`) y reutilizar `cron-secret`.
