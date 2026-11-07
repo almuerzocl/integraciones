@@ -65,3 +65,11 @@ export async function eliminarConexion(pool: Pool, restaurantId: string, proveed
   const { rowCount } = await pool.query('delete from integraciones.conexiones where restaurant_id = $1 and proveedor = $2', [restaurantId, proveedor]);
   return (rowCount ?? 0) > 0;
 }
+
+/** Todas las conexiones del restaurante, por proveedor (para la pantalla de resumen). */
+export async function listarConexiones(pool: Pool, restaurantId: string): Promise<Map<string, ConexionVista>> {
+  const { rows } = await pool.query<ConexionVista>(
+    `select id, proveedor, estado, ultimo_sync_ok_at, ultimo_error, errores_consecutivos
+       from integraciones.conexiones where restaurant_id = $1`, [restaurantId]);
+  return new Map(rows.map((c) => [c.proveedor, c]));
+}

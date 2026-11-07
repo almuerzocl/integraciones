@@ -1,26 +1,27 @@
-import type { ConexionVista, EjecucionVista } from '@/lib/conexiones';
-import { BotonSincronizar, Desconectar, FormularioConectar, PausarReanudar } from './conexion/formularios';
-import { salir } from './login/actions';
+import { BotonSincronizar, Desconectar, FormularioConectar, PausarReanudar } from '@/app/conexion/formularios';
+import { Estado, fechaCorta } from '@/components/estado';
+import { estadoDe } from '@/lib/catalogo';
+import { obtenerConexion, ultimasEjecuciones, type ConexionVista, type EjecucionVista } from '@/lib/conexiones';
+import { requerirAdmin } from '@/lib/contexto';
+import { db } from '@/lib/db';
 
-const fecha = (d: Date | null) =>
-  d ? new Intl.DateTimeFormat('es-CL', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Santiago' }).format(d) : '—';
+export async function PanelFudo() {
+  const ctx = await requerirAdmin();
+  const conexion = await obtenerConexion(db(), ctx.restaurantId, 'fudo');
+  const ejecuciones = conexion ? await ultimasEjecuciones(db(), conexion.id) : [];
+  return <VistaFudo conexion={conexion} ejecuciones={ejecuciones} />;
+}
 
-const ETIQUETA = { activa: 'Activa', pausada: 'Pausada', con_error: 'Con error' } as const;
-
-export function Panel({ email, conexion, ejecuciones }: { email: string; conexion: ConexionVista | null; ejecuciones: EjecucionVista[] }) {
+// Presentación pura (se puede previsualizar con datos de ejemplo).
+export function VistaFudo({ conexion, ejecuciones }: { conexion: ConexionVista | null; ejecuciones: EjecucionVista[] }) {
   return (
     <>
-      <header className="top">
-        <div><h1>Integraciones</h1><p className="sub" style={{ margin: 0 }}>{email}</p></div>
-        <form action={salir}><button className="ghost" type="submit">Salir</button></form>
-      </header>
-
       <section className="card">
         <h2>FUDO · menú</h2>
         {conexion ? (
           <>
             <p style={{ margin: '4px 0' }}>
-              Estado: <strong>{ETIQUETA[conexion.estado]}</strong> · última sincronización correcta: {fecha(conexion.ultimo_sync_ok_at)}
+              Estado: <Estado estado={estadoDe(conexion)} /> · última sincronización correcta: {fechaCorta(conexion.ultimo_sync_ok_at)}
             </p>
             {conexion.ultimo_error && <p className="err">Último error: {conexion.ultimo_error}</p>}
             <p className="sub">Cada 3 minutos se copian a su menú los productos vigentes de FUDO. El nombre, la descripción, el precio y la categoría se cambian en FUDO; la foto, el precio para llevar, las opciones y el menú del día, en almuerzo.cl.</p>
@@ -39,7 +40,7 @@ export function Panel({ email, conexion, ejecuciones }: { email: string; conexio
             <tbody>
               {ejecuciones.map((e) => (
                 <tr key={e.inicio.toISOString()} title={e.error ?? undefined}>
-                  <td>{fecha(e.inicio)}</td>
+                  <td>{fechaCorta(e.inicio)}</td>
                   <td className={e.resultado === 'error' ? 'err' : e.resultado === 'ok' ? 'ok' : ''}>{e.resultado === 'ok' ? 'Correcta' : e.resultado === 'error' ? 'Con error' : 'En curso'}</td>
                   <td>{e.creados}</td><td>{e.ocultados}</td><td>{e.ajustes_stock}</td>
                 </tr>

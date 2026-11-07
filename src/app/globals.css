@@ -16,3 +16,21 @@ table { width:100%; border-collapse:collapse; font-size:.9rem; }
 th, td { text-align:left; padding:6px 4px; border-bottom:1px solid var(--line); }
 th { color:var(--mute); font-weight:600; }
 details summary { cursor:pointer; color:var(--mute); }
+main { max-width:880px; }
+nav.tabs { display:flex; gap:4px; overflow-x:auto; border-bottom:1px solid var(--line); margin-bottom:20px; -webkit-overflow-scrolling:touch; }
+.tab { position:relative; padding:10px 16px; color:var(--mute); text-decoration:none; font-weight:600; border-bottom:3px solid transparent; white-space:nowrap; }
+.tab:hover { color:var(--ink); }
+.tab.on { color:var(--brand); border-bottom-color:var(--brand); }
+.tab:focus-visible, .tarjeta:focus-visible { outline:2px solid var(--brand); outline-offset:2px; border-radius:6px; }
+.punto { display:inline-block; width:8px; height:8px; margin-left:6px; border-radius:50%; background:var(--err); vertical-align:middle; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
+.tarjeta { display:block; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; color:inherit; text-decoration:none; }
+.tarjeta:hover { border-color:var(--brand); }
+.tarjeta-con_error { border-color:var(--err); }
+.tarjeta-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.alcance { color:var(--mute); margin:2px 0 12px; }
+.dato { margin:8px 0 0; font-size:.9rem; }
+.badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.8rem; font-weight:600; border:1px solid currentColor; }
+.badge-activa { color:var(--ok); } .badge-con_error { color:var(--err); } .badge-pausada, .badge-sin_conexion { color:var(--mute); }
+.aviso { padding:12px 16px; border-radius:10px; margin-bottom:16px; }
+.aviso-error { border:1px solid var(--err); color:var(--err); background:var(--card); font-weight:600; }

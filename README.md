@@ -16,6 +16,17 @@ FUDO (API pública) ──lee──▶ integraciones (este servicio) ──funci
 - **Credenciales de FUDO cifradas** con AES-256-GCM (`CREDENTIALS_KEY`, en Secret Manager); la base nunca tiene la clave.
 - **Ingreso** con la cuenta de almuerzo.cl; solo administradores del restaurante (`RESTAURANT_ADMIN`, `OWNER`, `ADMIN`) y solo para su restaurante.
 
+## Cómo sumar una integración
+
+La pantalla principal (resumen con una tarjeta por integración) y las pestañas se arman solas desde `src/lib/catalogo.ts`.
+
+1. Agregar la integración al catálogo (`id`, `nombre`, `alcance`, `proveedor`).
+2. Crear su panel de detalle y registrarlo en `src/app/(app)/[integracion]/detalle.tsx`.
+3. Guardar su conexión en `integraciones.conexiones` con ese `proveedor` (el resumen lee el estado de ahí).
+
+Las acciones del servidor de hoy (`src/app/conexion/actions.ts`) son de FUDO; al sumar la segunda integración conviene
+parametrizarlas por proveedor.
+
 ## Estado
 
 | Fase | Contenido | Estado |
