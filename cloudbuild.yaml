@@ -1,0 +1,49 @@
+# Cloud Build pipeline para almuerzo-integraciones (Cloud Run). Mismo patrón que el dashboard del restaurante.
+substitutions:
+  _REGION: us-central1
+  _REPO: almuerzo
+  _SERVICE: almuerzo-integraciones
+  _NEXT_PUBLIC_SUPABASE_URL: ""
+  _NEXT_PUBLIC_SUPABASE_ANON_KEY: ""
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+images:
+  - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${BUILD_ID}"
+
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "--build-arg"
+      - "NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL}"
+      - "--build-arg"
+      - "NEXT_PUBLIC_SUPABASE_ANON_KEY=${_NEXT_PUBLIC_SUPABASE_ANON_KEY}"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${BUILD_ID}"
+      - "."
+
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args: [push, "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${BUILD_ID}"]
+
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - "${_SERVICE}"
+      - "--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${BUILD_ID}"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--memory=512Mi"
+      - "--min-instances=0"
+      - "--max-instances=3"
+      - "--port=8080"
+      - "--allow-unauthenticated"
+      # Secretos NUEVOS y propios de este servicio. No reutiliza supabase-service-role-key: el servicio no la necesita.
+      - "--set-secrets=DATABASE_URL=integraciones-database-url:latest,CREDENTIALS_KEY=integraciones-credentials-key:latest,CRON_SECRET=cron-secret:latest"
+      - "--set-env-vars=NEXT_PUBLIC_SUPABASE_URL=${_NEXT_PUBLIC_SUPABASE_URL},NEXT_PUBLIC_SUPABASE_ANON_KEY=${_NEXT_PUBLIC_SUPABASE_ANON_KEY}"
